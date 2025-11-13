@@ -18,12 +18,11 @@ use alloy_sol_types::sol;
 use stylus_sdk::{
     alloy_primitives::{Address, U256, U64, U32, U8, I8, FixedBytes},
     prelude::*,
-    call::Call,
-    contract,
-    evm,
-    msg,
     crypto::keccak,
+    call::Call,
+    function_selector,
 };
+use stylus_sdk::stylus_core::{log, calls::errors::Error as CallError};
 
 // ====================================
 //          STORAGE STRUCTS          
@@ -130,7 +129,14 @@ sol! {
     error CallFailed();
 }
 
-// Implement From for stylus_sdk::call::Error
+// Implement From for CallError (new API)
+impl From<CallError> for ProtocolError {
+    fn from(_error: CallError) -> Self {
+        ProtocolError::CallFailed(CallFailed {})
+    }
+}
+
+// Implement From for old stylus_sdk::call::Error (deprecated but still used by ERC20)
 impl From<stylus_sdk::call::Error> for ProtocolError {
     fn from(_error: stylus_sdk::call::Error) -> Self {
         ProtocolError::CallFailed(CallFailed {})
@@ -191,7 +197,7 @@ impl ProtocolContract {
     
     /// Update the number of votes required to resolve a dispute
     pub fn update_number_of_votes(&mut self, new_number: u8) -> Result<(), ProtocolError> {
-        if msg::sender() != self.owner.get() {
+        if self.__stylus_host.msg_sender() != self.owner.get() {
             return Err(ProtocolError::NotOwner(NotOwner {}));
         }
         
@@ -205,15 +211,16 @@ impl ProtocolContract {
     
     /// Withdraw available USDC (excludes judge rewards)
     pub fn withdraw(&mut self) -> Result<(), ProtocolError> {
-        let sender = msg::sender();
+        let sender = self.__stylus_host.msg_sender();
         if sender != self.owner.get() {
             return Err(ProtocolError::NotOwner(NotOwner {}));
         }
         
         let usdc = self.usdc_token.get();
+        let contract_addr = self.__stylus_host.contract_address();
         let token = IERC20::new(usdc);
         let call = Call::new_in(self);
-        let balance = token.balance_of(call, contract::address())?;
+        let balance = token.balance_of(call, contract_addr)?;
         
         let contract_balance = self.contract_balance.get();
         
@@ -244,7 +251,7 @@ impl ProtocolContract {
     
     /// Register as a judge
     pub fn register_as_judge(&mut self) -> Result<(), ProtocolError> {
-        let sender = msg::sender();
+        let sender = self.__stylus_host.msg_sender();
         let judge = self.judges.get(sender);
         
         if judge.judge_address.get() != Address::ZERO {
@@ -256,7 +263,7 @@ impl ProtocolContract {
         new_judge.balance.set(U256::ZERO);
         new_judge.reputation.set(I8::ZERO);
         
-        evm::log(JudgeRegistered { judge: sender });
+        log(&self.__stylus_host, JudgeRegistered { judge: sender });
         
         Ok(())
     }
@@ -275,7 +282,7 @@ impl ProtocolContract {
         dispute.dispute_id.set(U32::from(deal_id));
         dispute.requester.set(requester);
         dispute.beneficiary.set(Address::ZERO); // TODO: Get from marketplace
-        dispute.contract_address.set(msg::sender());
+        dispute.contract_address.set(self.__stylus_host.msg_sender());
         dispute.waiting_for_judges.set(true);
         dispute.is_open.set(false);
         dispute.resolved.set(false);
@@ -284,10 +291,10 @@ impl ProtocolContract {
         dispute.able_to_vote_count.set(U256::ZERO);
         dispute.voters_count.set(U256::ZERO);
         
-        evm::log(DisputeCreated {
+        log(&self.__stylus_host, DisputeCreated {
             dispute_id: U256::from(dispute_id_u64),
             requester,
-            contract_address: msg::sender(),
+            contract_address: self.__stylus_host.msg_sender(),
         });
         
         // Increment counter
@@ -305,12 +312,12 @@ impl ProtocolContract {
         beneficiary: Address,
         _proof: String,
     ) -> Result<(), ProtocolError> {
-        let sender = msg::sender();
+        let sender = self.__stylus_host.msg_sender();
         
         // Transfer dispute fee from sender to this contract
         let usdc = self.usdc_token.get();
         let dispute_price = self.dispute_price.get();
-        let contract_addr = contract::address();
+        let contract_addr = self.__stylus_host.contract_address();
         
         let token = IERC20::new(usdc);
         let call = Call::new_in(self);
@@ -337,7 +344,7 @@ impl ProtocolContract {
         dispute.commits_count.set(U256::ZERO);
         dispute.reveals_count.set(U256::ZERO);
         
-        evm::log(DisputeCreated {
+        log(&self.__stylus_host, DisputeCreated {
             dispute_id: U256::from(dispute_id_u64),
             requester: sender,
             contract_address: contract_addr,
@@ -405,7 +412,7 @@ impl ProtocolContract {
     
     /// Register to vote on a dispute
     pub fn register_to_vote(&mut self, dispute_id: u64) -> Result<(), ProtocolError> {
-        let sender = msg::sender();
+        let sender = self.__stylus_host.msg_sender();
         let judge = self.judges.get(sender);
         
         if judge.judge_address.get() == Address::ZERO {
@@ -586,7 +593,7 @@ impl ProtocolContract {
     
 
     pub fn commit_vote(&mut self, dispute_id: u64, commit_hash: FixedBytes<32>) -> Result<(), ProtocolError> {
-        let sender = msg::sender();
+        let sender = self.__stylus_host.msg_sender();
         let mut dispute = self.disputes.setter(U64::from(dispute_id));
 
         if dispute.resolved.get() {
@@ -634,7 +641,7 @@ impl ProtocolContract {
         vote: bool,
         secret: Vec<u8>
     ) -> Result<(), ProtocolError> {
-        let sender = msg::sender();
+        let sender = self.__stylus_host.msg_sender();
         let mut dispute = self.disputes.setter(U64::from(dispute_id));
 
         if dispute.resolved.get() {
@@ -735,7 +742,7 @@ impl ProtocolContract {
                 let current_contract_balance = self.contract_balance.get();
                 self.contract_balance.set(current_contract_balance + contract_reward);
 
-                evm::log(DisputeResolved {
+                log(&self.__stylus_host, DisputeResolved {
                     dispute_id: U256::from(dispute_id),
                     winner: requester,
                 });
@@ -763,7 +770,7 @@ impl ProtocolContract {
                 let current_contract_balance = self.contract_balance.get();
                 self.contract_balance.set(current_contract_balance + contract_reward);
 
-                evm::log(DisputeResolved {
+                log(&self.__stylus_host, DisputeResolved {
                     dispute_id: U256::from(dispute_id),
                     winner: beneficiary,
                 });
@@ -799,7 +806,7 @@ impl ProtocolContract {
     
     /// Judge withdraw their balance
     pub fn judge_withdraw(&mut self) -> Result<(), ProtocolError> {
-        let sender = msg::sender();
+        let sender = self.__stylus_host.msg_sender();
         let judge = self.judges.get(sender);
         
         if judge.judge_address.get() == Address::ZERO {

@@ -4,6 +4,515 @@
  */
 import { GenericContractsDeclaration } from "../utils/scaffold-eth/contract";
 
-const deployedContracts = {} as const;
+const deployedContracts = {
+  "412346": {
+    protocol: {
+      address: "0x4af567288e68cad4aa93a272fe6139ca53859c70",
+      txHash:
+        "0x378382fd0e8b67c2939ae489d151fa67ac06b1bbec11ebd08efe55ebfd652295",
+      abi: [
+        {
+          inputs: [],
+          name: "AlreadyRegistered",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "CallFailed",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "DisputeAlreadyResolved",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "DisputeNotOpen",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "DisputeNotResolvedYet",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "JudgeAlreadyRegistered",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "JudgeAlreadyVoted",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "JudgeNotAllowedToVote",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "JudgesAlreadyAssigned",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "MustBeGreaterThanZero",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NoBalanceToWithdraw",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NoUSDCToWithdraw",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NotAJudge",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NotEnoughReputation",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NotOwner",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NotTheBeneficiary",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NotTheRequester",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "ProofCannotBeEmpty",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "dispute_id",
+              type: "uint64",
+            },
+          ],
+          name: "checkIfDisputeIsResolved",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "dispute_id",
+              type: "uint64",
+            },
+            {
+              internalType: "bytes32",
+              name: "commit_hash",
+              type: "bytes32",
+            },
+          ],
+          name: "commitVote",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "deal_id",
+              type: "uint64",
+            },
+            {
+              internalType: "address",
+              name: "requester",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "_proof",
+              type: "string",
+            },
+          ],
+          name: "createDispute",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "deal_id",
+              type: "uint64",
+            },
+            {
+              internalType: "address",
+              name: "beneficiary",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "_proof",
+              type: "string",
+            },
+          ],
+          name: "createDisputeDirect",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "disputeCount",
+          outputs: [
+            {
+              internalType: "uint64",
+              name: "",
+              type: "uint64",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "disputePrice",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "dispute_id",
+              type: "uint64",
+            },
+          ],
+          name: "executeDisputeResult",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "dispute_id",
+              type: "uint64",
+            },
+          ],
+          name: "getDispute",
+          outputs: [
+            {
+              internalType: "uint32",
+              name: "",
+              type: "uint32",
+            },
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "dispute_id",
+              type: "uint64",
+            },
+          ],
+          name: "getDisputeVotes",
+          outputs: [
+            {
+              internalType: "uint8",
+              name: "",
+              type: "uint8",
+            },
+            {
+              internalType: "uint8",
+              name: "",
+              type: "uint8",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "dispute_id",
+              type: "uint64",
+            },
+          ],
+          name: "getDisputeWinner",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "judge_address",
+              type: "address",
+            },
+          ],
+          name: "getJudge",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+            {
+              internalType: "int8",
+              name: "",
+              type: "int8",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "usdc",
+              type: "address",
+            },
+          ],
+          name: "init",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "judgeWithdraw",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "numberOfVotes",
+          outputs: [
+            {
+              internalType: "uint8",
+              name: "",
+              type: "uint8",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "registerAsJudge",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "dispute_id",
+              type: "uint64",
+            },
+          ],
+          name: "registerToVote",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "dispute_id",
+              type: "uint64",
+            },
+            {
+              internalType: "bool",
+              name: "vote",
+              type: "bool",
+            },
+            {
+              internalType: "uint8[]",
+              name: "secret",
+              type: "uint8[]",
+            },
+          ],
+          name: "revealVotes",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "dispute_id",
+              type: "uint64",
+            },
+            {
+              internalType: "address",
+              name: "beneficiary",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "_proof",
+              type: "string",
+            },
+          ],
+          name: "updateDisputeForBeneficiary",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "dispute_id",
+              type: "uint64",
+            },
+            {
+              internalType: "address",
+              name: "requester",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "_proof",
+              type: "string",
+            },
+          ],
+          name: "updateDisputeForPayer",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint8",
+              name: "new_number",
+              type: "uint8",
+            },
+          ],
+          name: "updateNumberOfVotes",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "withdraw",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+    },
+  },
+} as const;
 
 export default deployedContracts satisfies GenericContractsDeclaration;

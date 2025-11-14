@@ -1,12 +1,12 @@
 [package]
-name = "your-contract"
+name = "protocol"
 version = "0.1.11"
 edition = "2021"
 license = "MIT OR Apache-2.0"
-homepage = "https://github.com/OffchainLabs/stylus-hello-world"
-repository = "https://github.com/OffchainLabs/stylus-hello-world"
+homepage = "https://github.com/0xDarioSanchez/IG25-Protocol"
+repository = "https://github.com/0xDarioSanchez/IG25-Protocol"
 keywords = ["arbitrum", "ethereum", "stylus", "alloy"]
-description = "Stylus hello world example"
+description = "Lancer Protocol - Dispute resolution system with judge voting"
 
 [dependencies]
 alloy-primitives = "=0.8.20"
@@ -26,9 +26,10 @@ dotenv = "0.15.0"
 default = ["mini-alloc"]
 debug = ["stylus-sdk/debug"]
 mini-alloc = ["stylus-sdk/mini-alloc"]
+export-abi = ["stylus-sdk/export-abi"]
 
 [[bin]]
-name = "contracts"
+name = "protocol"
 path = "src/main.rs"
 
 [lib]

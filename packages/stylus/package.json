@@ -14,7 +14,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "clean-contracts": "git clean -xdf -e .env -e your-contract/ -e node_modules/",
+    "clean-contracts": "git clean -xdf -e .env -e contracts/ -e node_modules/",
     "deploy": "ts-node scripts/deploy_wrapper.ts",
     "dev": "tsc --watch",
     "export-abi": "ts-node scripts/export_abi.ts",
@@ -23,7 +23,8 @@
     "lint:fix": "eslint scripts --ext .ts --fix",
     "new-module": "bash scripts/new_module.sh",
     "start": "node dist/index.js",
-    "test": "ts-node scripts/test.ts"
+    "test": "ts-node scripts/test.ts",
+    "test:protocol": "ts-node scripts/test_protocol.ts"
   },
   "dependencies": {
     "abitype": "^1.0.8",

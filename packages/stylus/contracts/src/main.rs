@@ -6,5 +6,5 @@ pub extern "C" fn main() {}
 
 #[cfg(feature = "export-abi")]
 fn main() {
-    contracts::print_from_args();
+    protocol::print_from_args();
 }

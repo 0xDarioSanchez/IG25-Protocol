@@ -72,8 +72,8 @@ export async function exportStylusAbi(
 }
 
 if (require.main === module) {
-  // Get contract folder from command line args, default to 'your-contract'
-  const contractFolder = process.argv[2] || "your-contract";
+  // Get contract folder from command line args, default to 'contracts'
+  const contractFolder = process.argv[2] || "contracts";
   if (!fs.existsSync(contractFolder)) {
     console.error(`❌ Contract folder does not exist: ${contractFolder}`);
     process.exit(1);

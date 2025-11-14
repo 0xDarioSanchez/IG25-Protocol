@@ -38,7 +38,7 @@ export function getDeploymentConfig(
       throw new Error(`❌ Could not read contract name from Cargo.toml: ${e}`);
     }
   } else {
-    contractName = "your-contract";
+    contractName = "protocol";
   }
 
   return {

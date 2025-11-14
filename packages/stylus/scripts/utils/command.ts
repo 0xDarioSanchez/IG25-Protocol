@@ -115,13 +115,13 @@ export function executeCommand(
       // this can extract and detect errors from docker logs because it not throw error code
       const errors = extractErrorLines(errorLines);
 
-      if (code === 0 && !errors) {
+      if (code === 0 && (!errors || errors.trim().length === 0)) {
         console.log(`\n✅ ${description} completed successfully!`);
         resolve(output);
       } else {
         console.error(`\n❌ ${description} failed with exit code ${code}`);
         // Print error output starting from "project metadata hash computed on deployment" or error patterns, or all logs if not found
-        if (errors) {
+        if (errors && errors.trim().length > 0) {
           console.error(errors);
           if (
             !command.includes("--no-verify") &&
@@ -150,13 +150,22 @@ export function executeCommand(
 function extractErrorLines(errorLines: string[]): string | null {
   let output: string = "";
   if (errorLines.length > 0) {
+    // Look for deployment metadata (indicates successful progress)
     const metadataIndex = errorLines.findIndex((line) =>
       line.includes("project metadata hash computed on deployment"),
     );
+    
+    // Only look for actual compilation/deployment errors
+    // These must start with "Error:" (not just contain "error" in code or warnings)
     const errorIndex = errorLines.findIndex(
-      (line) =>
-        line.toLowerCase().includes("error[") ||
-        line.toLowerCase().includes("error:"),
+      (line) => {
+        const trimmed = line.trim();
+        // Must start with "Error:" (case-insensitive)
+        if (trimmed.match(/^Error:/i)) return true;
+        // Or be a rust error marker like "error[E0308]:"
+        if (trimmed.match(/^error\[E\d+\]:/)) return true;
+        return false;
+      }
     );
 
     let startIndex = -1;

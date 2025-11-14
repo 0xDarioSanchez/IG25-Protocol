@@ -2803,6 +2803,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "protocol"
+version = "0.1.11"
+dependencies = [
+ "alloy-primitives",
+ "alloy-sol-types",
+ "dotenv",
+ "ethers",
+ "eyre",
+ "hex",
+ "stylus-sdk",
+ "tokio",
+]
+
+[[package]]
 name = "quick-error"
 version = "1.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3631,6 +3645,7 @@ dependencies = [
  "keccak-const",
  "lazy_static",
  "mini-alloc",
+ "regex",
  "stylus-core",
  "stylus-proc",
 ]
@@ -4589,20 +4604,6 @@ dependencies = [
  "quote",
  "syn 2.0.101",
  "synstructure",
-]
-
-[[package]]
-name = "your-contract"
-version = "0.1.11"
-dependencies = [
- "alloy-primitives",
- "alloy-sol-types",
- "dotenv",
- "ethers",
- "eyre",
- "hex",
- "stylus-sdk",
- "tokio",
 ]
 
 [[package]]

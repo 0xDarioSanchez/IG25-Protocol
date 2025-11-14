@@ -31,14 +31,13 @@ export default async function deployScript(deployOptions: DeployOptions) {
 
   // Deploy a single contract
   await deployStylusContract({
-    contract: "your-contract",
-    constructorArgs: [config.deployerAddress!],
+    contract: "contracts",
     ...deployOptions,
   });
 
   // EXAMPLE: Deploy your contract with a custom name, uncomment to try
   // await deployStylusContract({
-  //   contract: "your-contract",
+  //   contract: "contracts",
   //   constructorArgs: [config.deployerAddress],
   //   name: "my-contract",
   //   ...deployOptions,

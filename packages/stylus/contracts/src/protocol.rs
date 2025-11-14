@@ -19,7 +19,7 @@ use stylus_sdk::{
     alloy_primitives::{Address, U256, U64, U32, U8, I8, FixedBytes},
     prelude::*,
     crypto::keccak,
-    call::Call,
+    // call::Call, // COMMENTED OUT - not needed without USDC transfers
     function_selector,
 };
 use stylus_sdk::stylus_core::{log, calls::errors::Error as CallError};
@@ -216,31 +216,32 @@ impl ProtocolContract {
             return Err(ProtocolError::NotOwner(NotOwner {}));
         }
         
-        let usdc = self.usdc_token.get();
-        let contract_addr = self.__stylus_host.contract_address();
-        let token = IERC20::new(usdc);
-        let call = Call::new_in(self);
-        let balance = token.balance_of(call, contract_addr)?;
+        // COMMENTED OUT FOR TESTING - USDC transfer logic
+        // let usdc = self.usdc_token.get();
+        // let contract_addr = self.__stylus_host.contract_address();
+        // let token = IERC20::new(usdc);
+        // let call = Call::new_in(self);
+        // let balance = token.balance_of(call, contract_addr)?;
         
-        let contract_balance = self.contract_balance.get();
+        // let contract_balance = self.contract_balance.get();
         
-        if balance <= contract_balance {
-            return Err(ProtocolError::NoUSDCToWithdraw(NoUSDCToWithdraw {}));
-        }
+        // if balance <= contract_balance {
+        //     return Err(ProtocolError::NoUSDCToWithdraw(NoUSDCToWithdraw {}));
+        // }
         
-        let amount_to_withdraw = balance - contract_balance;
+        // let amount_to_withdraw = balance - contract_balance;
         
         // Reset contract balance
         self.contract_balance.set(U256::ZERO);
         
         // Transfer to owner
-        let token2 = IERC20::new(usdc);
-        let call2 = Call::new_in(self);
-        let success = token2.transfer(call2, sender, amount_to_withdraw)?;
+        // let token2 = IERC20::new(usdc);
+        // let call2 = Call::new_in(self);
+        // let success = token2.transfer(call2, sender, amount_to_withdraw)?;
         
-        if !success {
-            return Err(ProtocolError::CallFailed(CallFailed {}));
-        }
+        // if !success {
+        //     return Err(ProtocolError::CallFailed(CallFailed {}));
+        // }
         
         Ok(())
     }
@@ -314,16 +315,17 @@ impl ProtocolContract {
     ) -> Result<(), ProtocolError> {
         let sender = self.__stylus_host.msg_sender();
         
+        // COMMENTED OUT FOR TESTING - USDC transfer logic
         // Transfer dispute fee from sender to this contract
-        let usdc = self.usdc_token.get();
-        let dispute_price = self.dispute_price.get();
+        // let usdc = self.usdc_token.get();
+        // let dispute_price = self.dispute_price.get();
         let contract_addr = self.__stylus_host.contract_address();
         
-        let token = IERC20::new(usdc);
-        let call = Call::new_in(self);
+        // let token = IERC20::new(usdc);
+        // let call = Call::new_in(self);
         
         // Transfer USDC from sender to protocol
-        token.transfer_from(call, sender, contract_addr, dispute_price)?;
+        // token.transfer_from(call, sender, contract_addr, dispute_price)?;
         
         // Create dispute
         let dispute_id = self.dispute_count.get();
@@ -822,15 +824,16 @@ impl ProtocolContract {
         let mut judge_mut = self.judges.setter(sender);
         judge_mut.balance.set(U256::ZERO);
         
+        // COMMENTED OUT FOR TESTING - USDC transfer logic
         // Transfer USDC
-        let usdc = self.usdc_token.get();
-        let token = IERC20::new(usdc);
-        let call = Call::new_in(self);
-        let success = token.transfer(call, sender, balance)?;
+        // let usdc = self.usdc_token.get();
+        // let token = IERC20::new(usdc);
+        // let call = Call::new_in(self);
+        // let success = token.transfer(call, sender, balance)?;
         
-        if !success {
-            return Err(ProtocolError::CallFailed(CallFailed {}));
-        }
+        // if !success {
+        //     return Err(ProtocolError::CallFailed(CallFailed {}));
+        // }
         
         Ok(())
     }

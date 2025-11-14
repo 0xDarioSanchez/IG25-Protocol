@@ -191,6 +191,7 @@ async function runProtocolTest() {
     { judge: judges[4], vote: false, secret: "secret5" },
   ];
 
+  let totalCommitGas = 0n;
   for (const v of votes) {
     const wallet = createWalletClient({ account: v.judge.account, chain, transport: http() });
     const commitHash = generateCommitHash(v.vote, v.secret);
@@ -205,15 +206,20 @@ async function runProtocolTest() {
         args: [disputeId, commitHash],
       });
       const hash = await wallet.writeContract(request);
-      await publicClient.waitForTransactionReceipt({ hash });
-      console.log(`✅ ${v.judge.name} committed`);
+      const receipt = await publicClient.waitForTransactionReceipt({ hash });
+      const gasUsed = receipt.gasUsed;
+      totalCommitGas += gasUsed;
+      console.log(`✅ ${v.judge.name} committed (Gas: ${gasUsed.toLocaleString()})`);
     } catch (e: any) {
       console.log(`⚠️  ${v.judge.name}:`, e.message.split('\n')[0]);
     }
   }
+  console.log(`\n📊 Total gas used for 5 commits: ${totalCommitGas.toLocaleString()}`);
+  console.log(`📊 Average gas per commit: ${(totalCommitGas / 5n).toLocaleString()}`);
 
   // Step 6: Reveal Votes
   console.log("\nStep 6: Reveal Votes");
+  let totalGasUsed = 0n;
   for (const v of votes) {
     const wallet = createWalletClient({ account: v.judge.account, chain, transport: http() });
     const secretBytes = Array.from(new TextEncoder().encode(v.secret));
@@ -227,12 +233,16 @@ async function runProtocolTest() {
         args: [disputeId, v.vote, secretBytes],
       });
       const hash = await wallet.writeContract(request);
-      await publicClient.waitForTransactionReceipt({ hash });
-      console.log(`✅ ${v.judge.name} revealed`);
+      const receipt = await publicClient.waitForTransactionReceipt({ hash });
+      const gasUsed = receipt.gasUsed;
+      totalGasUsed += gasUsed;
+      console.log(`✅ ${v.judge.name} revealed (Gas: ${gasUsed.toLocaleString()})`);
     } catch (e: any) {
       console.log(`⚠️  ${v.judge.name}:`, e.message.split('\n')[0]);
     }
   }
+  console.log(`\n📊 Total gas used for 5 reveals: ${totalGasUsed.toLocaleString()}`);
+  console.log(`📊 Average gas per reveal: ${(totalGasUsed / 5n).toLocaleString()}`);
 
   // Step 7: Check Result
   console.log("\nStep 7: Check Results");

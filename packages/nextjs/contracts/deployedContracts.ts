@@ -8,8 +8,7 @@ const deployedContracts = {
   "412346": {
     protocol: {
       address: "0xcdc02720da9846ca857c34985714e5aa9570ff53",
-      txHash:
-        "0x976d4ad992cca22720a229386d5c99a2efd59e18476b888015e106e6b835e892",
+      txHash: "0x976d4ad992cca22720a229386d5c99a2efd59e18476b888015e106e6b835e892",
       abi: [
         {
           inputs: [],
